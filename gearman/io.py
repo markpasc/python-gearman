@@ -137,9 +137,10 @@ class _Select(object):
                 success = True
             except (select.error, gearman.errors.ConnectionError):
                 bad_conns = _find_bad_connections(connections)
-                map(self.read.discard, bad_conns)
-                map(self.write.discard, bad_conns)
-                map(self.error.discard, bad_conns)
+                for conn in bad_conns:
+                    self.read.discard(conn)
+                    self.write.discard(conn)
+                    self.error.discard(conn)
                 errors |= set(bad_conns)
                 
 
@@ -151,5 +152,5 @@ class _Select(object):
         for conn in errors:
             events[conn.fileno()] = events.get(conn.fileno(), 0) | ERROR
 
-        return events.items()
+        return list(events.items())
 
