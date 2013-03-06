@@ -7,7 +7,9 @@ from gearman.protocol import GEARMAN_COMMAND_PRE_SLEEP, GEARMAN_COMMAND_RESET_AB
 
 gearman_logger = logging.getLogger(__name__)
 
+
 class GearmanWorkerCommandHandler(GearmanCommandHandler):
+
     """GearmanWorker state machine on a per connection basis
 
     A worker can be in the following distinct states:
@@ -15,7 +17,9 @@ class GearmanWorkerCommandHandler(GearmanCommandHandler):
         AWAKE         -> Transitional state (for NOOP)
         AWAITING_JOB  -> Holding worker level job lock and awaiting a server response
         EXECUTING_JOB -> Transitional state (for ASSIGN_JOB)
+
     """
+
     def __init__(self, connection_manager=None):
         super(GearmanWorkerCommandHandler, self).__init__(connection_manager=connection_manager)
 

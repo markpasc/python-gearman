@@ -4,17 +4,18 @@ import sys
 
 from gearman import compat
 from gearman.connection_manager import GearmanConnectionManager
-from gearman.worker_handler import GearmanWorkerCommandHandler
 from gearman.errors import ConnectionError
+from gearman.worker_handler import GearmanWorkerCommandHandler
 
 gearman_logger = logging.getLogger(__name__)
 
 POLL_TIMEOUT_IN_SECONDS = 60.0
 
+
 class GearmanWorker(GearmanConnectionManager):
-    """
-    GearmanWorker :: Interface to accept jobs from a Gearman server
-    """
+
+    """GearmanWorker :: Interface to accept jobs from a Gearman server"""
+
     command_handler_class = GearmanWorkerCommandHandler
 
     def __init__(self, host_list=None):
@@ -154,6 +155,7 @@ class GearmanWorker(GearmanConnectionManager):
 
     def wait_until_updates_sent(self, multiple_gearman_jobs, poll_timeout=None):
         connection_set = set([current_job.connection for current_job in multiple_gearman_jobs])
+
         def continue_while_updates_pending(any_activity):
             return compat.any(current_connection.writable() for current_connection in connection_set)
 
@@ -248,10 +250,10 @@ class GearmanWorker(GearmanConnectionManager):
             self.command_handler_holding_job_lock = None
 
         return True
-    
+
     def has_job_lock(self):
         return bool(self.command_handler_holding_job_lock is not None)
-    
+
     def check_job_lock(self, command_handler):
         """Check to see if we hold the job lock"""
         return bool(self.command_handler_holding_job_lock == command_handler)

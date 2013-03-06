@@ -2,18 +2,21 @@ import unittest
 
 from gearman.admin_client import GearmanAdminClient, ECHO_STRING
 from gearman.admin_client_handler import GearmanAdminClientCommandHandler
-
 from gearman.errors import InvalidAdminClientState, ProtocolError
 from gearman.protocol import GEARMAN_COMMAND_ECHO_RES, GEARMAN_COMMAND_ECHO_REQ, GEARMAN_COMMAND_TEXT_COMMAND, \
     GEARMAN_SERVER_COMMAND_STATUS, GEARMAN_SERVER_COMMAND_VERSION, GEARMAN_SERVER_COMMAND_WORKERS, GEARMAN_SERVER_COMMAND_MAXQUEUE, GEARMAN_SERVER_COMMAND_SHUTDOWN
 
 from tests._core_testing import _GearmanAbstractTest, MockGearmanConnectionManager, MockGearmanConnection
 
+
 class MockGearmanAdminClient(GearmanAdminClient, MockGearmanConnectionManager):
     pass
 
+
 class CommandHandlerStateMachineTest(_GearmanAbstractTest):
+
     """Test the public interface a GearmanWorker may need to call in order to update state on a GearmanWorkerCommandHandler"""
+
     connection_manager_class = MockGearmanAdminClient
     command_handler_class = GearmanAdminClientCommandHandler
 
@@ -61,12 +64,12 @@ class CommandHandlerStateMachineTest(_GearmanAbstractTest):
         self.assertEquals(test_response['task'], 'test_function')
         self.assertEquals(test_response['queued'], 1)
         self.assertEquals(test_response['running'], 5)
-        self.assertEquals(test_response['workers'],  17)
+        self.assertEquals(test_response['workers'], 17)
 
         self.assertEquals(another_response['task'], 'another_function')
         self.assertEquals(another_response['queued'], 2)
         self.assertEquals(another_response['running'], 4)
-        self.assertEquals(another_response['workers'],  23)
+        self.assertEquals(another_response['workers'], 23)
 
     def test_version(self):
         expected_version = '0.12345'
@@ -105,12 +108,12 @@ class CommandHandlerStateMachineTest(_GearmanAbstractTest):
         self.assertEquals(test_response['file_descriptor'], '12')
         self.assertEquals(test_response['ip'], 'IP-A')
         self.assertEquals(test_response['client_id'], 'CLIENT-A')
-        self.assertEquals(test_response['tasks'],  ('function-A', 'function-B'))
+        self.assertEquals(test_response['tasks'], ('function-A', 'function-B'))
 
         self.assertEquals(another_response['file_descriptor'], '13')
         self.assertEquals(another_response['ip'], 'IP-B')
         self.assertEquals(another_response['client_id'], 'CLIENT-B')
-        self.assertEquals(another_response['tasks'],  ('function-C', ))
+        self.assertEquals(another_response['tasks'], ('function-C', ))
 
     def test_maxqueue(self):
         self.send_server_command(GEARMAN_SERVER_COMMAND_MAXQUEUE)
@@ -148,6 +151,7 @@ class CommandHandlerStateMachineTest(_GearmanAbstractTest):
         self.assertEquals(expected_command, server_cmd)
 
         return server_response
+
 
 if __name__ == '__main__':
     unittest.main()

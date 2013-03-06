@@ -2,17 +2,18 @@ import collections
 from gearman import compat
 import unittest
 
-from gearman.worker import GearmanWorker
-from gearman.worker_handler import GearmanWorkerCommandHandler
-
 from gearman.errors import ServerUnavailable, InvalidWorkerState
 from gearman.protocol import get_command_name, GEARMAN_COMMAND_RESET_ABILITIES, GEARMAN_COMMAND_CAN_DO, GEARMAN_COMMAND_SET_CLIENT_ID, \
     GEARMAN_COMMAND_NOOP, GEARMAN_COMMAND_PRE_SLEEP, GEARMAN_COMMAND_NO_JOB, GEARMAN_COMMAND_GRAB_JOB_UNIQ, GEARMAN_COMMAND_JOB_ASSIGN_UNIQ, \
     GEARMAN_COMMAND_WORK_STATUS, GEARMAN_COMMAND_WORK_FAIL, GEARMAN_COMMAND_WORK_COMPLETE, GEARMAN_COMMAND_WORK_DATA, GEARMAN_COMMAND_WORK_EXCEPTION, GEARMAN_COMMAND_WORK_WARNING
+from gearman.worker import GearmanWorker
+from gearman.worker_handler import GearmanWorkerCommandHandler
 
 from tests._core_testing import _GearmanAbstractTest, MockGearmanConnectionManager, MockGearmanConnection
 
+
 class MockGearmanWorker(MockGearmanConnectionManager, GearmanWorker):
+
     def __init__(self, *largs, **kwargs):
         super(MockGearmanWorker, self).__init__(*largs, **kwargs)
         self.worker_job_queues = compat.defaultdict(collections.deque)
@@ -21,7 +22,9 @@ class MockGearmanWorker(MockGearmanConnectionManager, GearmanWorker):
         current_handler = self.connection_to_handler_map[current_job.connection]
         self.worker_job_queues[current_handler].append(current_job)
 
+
 class _GearmanAbstractWorkerTest(_GearmanAbstractTest):
+
     connection_manager_class = MockGearmanWorker
     command_handler_class = GearmanWorkerCommandHandler
 
@@ -45,8 +48,11 @@ class _GearmanAbstractWorkerTest(_GearmanAbstractTest):
     def assert_sent_client_id(self, expected_client_id):
         self.assert_sent_command(GEARMAN_COMMAND_SET_CLIENT_ID, client_id=expected_client_id)
 
+
 class WorkerTest(_GearmanAbstractWorkerTest):
+
     """Test the public worker interface"""
+
     def test_registering_functions(self):
         # Tests that the abilities were set on the GearmanWorker AND the GearmanWorkerCommandHandler
         # Does NOT test that commands were actually sent out as that is tested in GearmanWorkerCommandHandlerInterfaceTest.test_set_abilities
@@ -132,6 +138,7 @@ class WorkerTest(_GearmanAbstractWorkerTest):
 
 
 class WorkerCommandHandlerInterfaceTest(_GearmanAbstractWorkerTest):
+
     """Test the public interface a GearmanWorker may need to call in order to update state on a GearmanWorkerCommandHandler"""
 
     def test_on_connect(self):
@@ -203,11 +210,15 @@ class WorkerCommandHandlerInterfaceTest(_GearmanAbstractWorkerTest):
         self.command_handler.send_job_warning(current_job, 'job warning')
         self.assert_sent_command(GEARMAN_COMMAND_WORK_WARNING, job_handle=current_job.handle, data='job warning')
 
+
 class WorkerCommandHandlerStateMachineTest(_GearmanAbstractWorkerTest):
+
     """Test multiple state transitions within a GearmanWorkerCommandHandler
 
     End to end tests without a server
+
     """
+
     connection_manager_class = MockGearmanWorker
     command_handler_class = GearmanWorkerCommandHandler
 
@@ -360,6 +371,6 @@ class WorkerCommandHandlerStateMachineTest(_GearmanAbstractWorkerTest):
         expected_value = (is_locked and self.command_handler) or None
         self.assertEqual(self.connection_manager.command_handler_holding_job_lock, expected_value)
 
+
 if __name__ == '__main__':
     unittest.main()
-

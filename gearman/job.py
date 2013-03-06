@@ -1,8 +1,12 @@
 import collections
+
 from gearman.constants import PRIORITY_NONE, JOB_UNKNOWN, JOB_PENDING, JOB_CREATED, JOB_FAILED, JOB_COMPLETE
 
+
 class GearmanJob(object):
+
     """Represents the basics of a job... used in GearmanClient / GearmanWorker to represent job states"""
+
     def __init__(self, connection, handle, task, unique, data):
         self.connection = connection
         self.handle = handle
@@ -17,8 +21,11 @@ class GearmanJob(object):
     def __repr__(self):
         return '<GearmanJob connection/handle=(%r, %r), task=%s, unique=%s, data=%r>' % (self.connection, self.handle, self.task, self.unique, self.data)
 
+
 class GearmanJobRequest(object):
+
     """Represents a job request... used in GearmanClient to represent job states"""
+
     def __init__(self, gearman_job, initial_priority=PRIORITY_NONE, background=False, max_attempts=1):
         self.gearman_job = gearman_job
 

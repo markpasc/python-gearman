@@ -3,14 +3,15 @@ import struct
 import unittest
 
 from gearman import protocol
-
 from gearman.connection import GearmanConnection
 from gearman.constants import JOB_PENDING, JOB_CREATED, JOB_FAILED, JOB_COMPLETE
 from gearman.errors import ConnectionError, ServerUnavailable, ProtocolError
 
 from tests._core_testing import _GearmanAbstractTest
 
+
 class ProtocolBinaryCommandsTest(unittest.TestCase):
+
     #######################
     # Begin parsing tests #
     #######################
@@ -167,7 +168,7 @@ class ProtocolBinaryCommandsTest(unittest.TestCase):
         # Assert we check for NULLs in all but the "last" argument, where last depends on the cmd_type.
         cmd_type = protocol.GEARMAN_COMMAND_SUBMIT_JOB
         cmd_args = dict(task='function', data='ab\x00cd', unique='12345')
-        protocol.pack_binary_command(cmd_type, cmd_args) # Should not raise, 'data' is last.
+        protocol.pack_binary_command(cmd_type, cmd_args)  # Should not raise, 'data' is last.
 
         # Assert we check for NULLs in all but the "last" argument, where last depends on the cmd_type.
         cmd_type = protocol.GEARMAN_COMMAND_SUBMIT_JOB
@@ -216,8 +217,10 @@ class ProtocolBinaryCommandsTest(unittest.TestCase):
         packed_command_buffer = protocol.pack_binary_command(cmd_type, cmd_args)
         self.assertEquals(packed_command_buffer, expected_command_buffer)
 
+
 class ProtocolTextCommandsTest(unittest.TestCase):
-	#######################
+
+    #######################
     # Begin parsing tests #
     #######################
     def test_parsing_errors(self):
@@ -275,13 +278,19 @@ class ProtocolTextCommandsTest(unittest.TestCase):
         packed_command = protocol.pack_text_command(cmd_type, cmd_args)
         self.assertEquals(packed_command, expected_string)
 
+
 class GearmanConnectionTest(unittest.TestCase):
+
     """Tests the base CommandHandler class that underpins all other CommandHandlerTests"""
+
     def test_recv_command(self):
         pass
 
+
 class GearmanCommandHandlerTest(_GearmanAbstractTest):
+
     """Tests the base CommandHandler class that underpins all other CommandHandlerTests"""
+
     def _test_recv_command(self):
         # recv_echo_res and recv_error are predefined on the CommandHandler
         self.command_handler.recv_command(protocol.GEARMAN_COMMAND_NOOP)

@@ -13,6 +13,7 @@ READ = _EPOLLIN
 WRITE = _EPOLLOUT
 ERROR = _EPOLLERR | _EPOLLHUP
 
+
 def get_connection_poller():
     """
     Returns a select.epoll-like object. Depending on the platform, this will
@@ -26,12 +27,13 @@ def get_connection_poller():
     else:
         return _Select()
 
+
 def _find_bad_connections(connections):
     """
-    Find any bad connections in a list of connections. 
-    
-    For use with select.select. 
-    
+    Find any bad connections in a list of connections.
+
+    For use with select.select.
+
     When select throws an exception, it's likely that one of the sockets
     passed in has died. In order to find the bad connections, they must be
     checked individually. This will do so and return a list of any bad
@@ -45,12 +47,14 @@ def _find_bad_connections(connections):
             bad.append(conn)
     return bad
 
+
 class _Select(object):
-    """
-    A `select.epoll`-like object that uses select.select.
+
+    """A `select.epoll`-like object that uses select.select.
 
     Used as a fallback when epoll is not available. Inspired by tornado's
     fallback mechanism
+
     """
 
     def __init__(self):
@@ -67,7 +71,7 @@ class _Select(object):
 
     def register(self, fd, evmask):
         """
-        Register a file descriptor for polling. 
+        Register a file descriptor for polling.
 
         fd: a file descriptor (socket) to be registers
         evmask: a bit set describing the desired events to report
@@ -123,17 +127,16 @@ class _Select(object):
             # is activity
             timeout = None
 
-        connections = (self.read|self.write|self.error)
-        
+        connections = (self.read | self.write | self.error)
+
         success = False
         while not success and connections:
             connections -= errors
             try:
-                r, w, e = gearman.util.select(self.read, 
-                        self.write, self.error, timeout)
+                r, w, e = gearman.util.select(self.read, self.write, self.error, timeout)
                 readable = set(r)
                 writable = set(w)
-                errors |= set(e) #this set could already be populated
+                errors |= set(e)  # this set could already be populated
                 success = True
             except (select.error, gearman.errors.ConnectionError):
                 bad_conns = _find_bad_connections(connections)
@@ -142,7 +145,6 @@ class _Select(object):
                     self.write.discard(conn)
                     self.error.discard(conn)
                 errors |= set(bad_conns)
-                
 
         events = {}
         for conn in readable:
@@ -153,4 +155,3 @@ class _Select(object):
             events[conn.fileno()] = events.get(conn.fileno(), 0) | ERROR
 
         return list(events.items())
-

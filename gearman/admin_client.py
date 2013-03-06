@@ -1,21 +1,22 @@
 import logging
 import time
 
-from gearman import util
-
-from gearman.connection_manager import GearmanConnectionManager
 from gearman.admin_client_handler import GearmanAdminClientCommandHandler
+from gearman.connection_manager import GearmanConnectionManager
 from gearman.errors import ConnectionError, InvalidAdminClientState, ServerUnavailable
 from gearman.protocol import GEARMAN_COMMAND_ECHO_RES, GEARMAN_COMMAND_ECHO_REQ, \
     GEARMAN_SERVER_COMMAND_STATUS, GEARMAN_SERVER_COMMAND_VERSION, GEARMAN_SERVER_COMMAND_WORKERS, \
     GEARMAN_SERVER_COMMAND_MAXQUEUE, GEARMAN_SERVER_COMMAND_SHUTDOWN
+from gearman import util
 
 gearman_logger = logging.getLogger(__name__)
 
 ECHO_STRING = "ping? pong!"
 DEFAULT_ADMIN_CLIENT_TIMEOUT = 10.0
 
+
 class GearmanAdminClient(GearmanConnectionManager):
+
     """GearmanAdminClient :: Interface to send/receive administrative commands to a Gearman server
 
     This client acts as a BLOCKING client and each call will poll until it receives a satisfactory server response
@@ -23,6 +24,7 @@ class GearmanAdminClient(GearmanConnectionManager):
     http://gearman.org/index.php?id=protocol
     See section 'Administrative Protocol'
     """
+
     command_handler_class = GearmanAdminClientCommandHandler
 
     def __init__(self, host_list=None, poll_timeout=DEFAULT_ADMIN_CLIENT_TIMEOUT):
@@ -90,6 +92,7 @@ class GearmanAdminClient(GearmanConnectionManager):
 
     def wait_until_server_responds(self, expected_type):
         current_handler = self.current_handler
+
         def continue_while_no_response(any_activity):
             return (not current_handler.response_ready)
 

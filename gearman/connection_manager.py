@@ -10,7 +10,9 @@ from gearman import compat
 
 gearman_logger = logging.getLogger(__name__)
 
+
 class DataEncoder(object):
+
     @classmethod
     def encode(cls, encodable_object):
         raise NotImplementedError
@@ -19,8 +21,11 @@ class DataEncoder(object):
     def decode(cls, decodable_string):
         raise NotImplementedError
 
+
 class NoopEncoder(DataEncoder):
+
     """Provide common object dumps for all communications over gearman"""
+
     @classmethod
     def _enforce_byte_string(cls, given_object):
         if type(given_object) != str:
@@ -36,7 +41,9 @@ class NoopEncoder(DataEncoder):
         cls._enforce_byte_string(decodable_string)
         return decodable_string
 
+
 class GearmanConnectionManager(object):
+
     """Abstract base class for any Gearman-type client that needs to connect/listen to multiple connections
 
     Mananges and polls a group of gearman connections
@@ -44,7 +51,9 @@ class GearmanConnectionManager(object):
     The state of a connection is represented within the command handler
 
     Automatically encodes all 'data' fields as specified in protocol.py
+
     """
+
     command_handler_class = None
     connection_class = GearmanConnection
 
@@ -111,7 +120,7 @@ class GearmanConnectionManager(object):
         # a timeout of -1 when used with epoll will block until there
         # is activity. Select does not support negative timeouts, so this
         # is translated to a timeout=None when falling back to select
-        timeout = timeout or -1 
+        timeout = timeout or -1
 
         readable = set()
         writable = set()
@@ -173,10 +182,8 @@ class GearmanConnectionManager(object):
         connection_ok = compat.any(current_connection.connected for current_connection in submitted_connections)
         poller = gearman.io.get_connection_poller()
         if connection_ok:
-            self._register_connections_with_poller(submitted_connections, 
-                    poller)
-            connection_map = dict([(c.fileno(), c) for c in
-                submitted_connections if c.connected])
+            self._register_connections_with_poller(submitted_connections, poller)
+            connection_map = dict((c.fileno(), c) for c in submitted_connections if c.connected)
 
         while connection_ok and callback_ok:
             time_remaining = stopwatch.get_time_remaining()

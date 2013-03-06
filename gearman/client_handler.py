@@ -1,6 +1,6 @@
 import collections
-import time
 import logging
+import time
 import weakref
 
 from gearman.command_handler import GearmanCommandHandler
@@ -10,8 +10,11 @@ from gearman.protocol import GEARMAN_COMMAND_GET_STATUS, submit_cmd_for_backgrou
 
 gearman_logger = logging.getLogger(__name__)
 
+
 class GearmanClientCommandHandler(GearmanCommandHandler):
+
     """Maintains the state of this connection on behalf of a GearmanClient"""
+
     def __init__(self, connection_manager=None):
         super(GearmanClientCommandHandler, self).__init__(connection_manager=connection_manager)
 

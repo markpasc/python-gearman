@@ -4,7 +4,6 @@ import unittest
 
 from gearman.client import GearmanClient
 from gearman.client_handler import GearmanClientCommandHandler
-
 from gearman.constants import PRIORITY_NONE, PRIORITY_HIGH, PRIORITY_LOW, JOB_UNKNOWN, JOB_PENDING, JOB_CREATED, JOB_FAILED, JOB_COMPLETE
 from gearman.errors import ExceededConnectionAttempts, ServerUnavailable, InvalidClientState
 from gearman.protocol import submit_cmd_for_background_priority, GEARMAN_COMMAND_STATUS_RES, GEARMAN_COMMAND_GET_STATUS, GEARMAN_COMMAND_JOB_CREATED, \
@@ -12,11 +11,15 @@ from gearman.protocol import submit_cmd_for_background_priority, GEARMAN_COMMAND
 
 from tests._core_testing import _GearmanAbstractTest, MockGearmanConnectionManager, MockGearmanConnection
 
+
 class MockGearmanClient(GearmanClient, MockGearmanConnectionManager):
     pass
 
+
 class ClientTest(_GearmanAbstractTest):
+
     """Test the public client interface"""
+
     connection_manager_class = MockGearmanClient
     command_handler_class = GearmanClientCommandHandler
 
@@ -147,6 +150,7 @@ class ClientTest(_GearmanAbstractTest):
     def test_multiple_fg_job_submission(self):
         submitted_job_count = 5
         expected_job_list = [self.generate_job() for _ in xrange(submitted_job_count)]
+
         def mark_jobs_created(rx_conns, wr_conns, ex_conns):
             for current_job in expected_job_list:
                 self.command_handler.recv_command(GEARMAN_COMMAND_JOB_CREATED, job_handle=current_job.handle)
@@ -171,6 +175,7 @@ class ClientTest(_GearmanAbstractTest):
 
     def test_single_bg_job_submission(self):
         expected_job = self.generate_job()
+
         def mark_job_created(rx_conns, wr_conns, ex_conns):
             self.command_handler.recv_command(GEARMAN_COMMAND_JOB_CREATED, job_handle=expected_job.handle)
             return rx_conns, wr_conns, ex_conns
@@ -189,6 +194,7 @@ class ClientTest(_GearmanAbstractTest):
 
     def test_single_fg_job_submission_timeout(self):
         expected_job = self.generate_job()
+
         def job_failed_submission(rx_conns, wr_conns, ex_conns):
             return rx_conns, wr_conns, ex_conns
 
@@ -208,6 +214,7 @@ class ClientTest(_GearmanAbstractTest):
         timeout_request = self.generate_job_request()
 
         self.update_requests = True
+
         def multiple_job_updates(rx_conns, wr_conns, ex_conns):
             # Only give a single status update and have the 3rd job handle timeout
             if self.update_requests:
@@ -293,7 +300,9 @@ class ClientTest(_GearmanAbstractTest):
 
 
 class ClientCommandHandlerInterfaceTest(_GearmanAbstractTest):
+
     """Test the public interface a GearmanClient may need to call in order to update state on a GearmanClientCommandHandler"""
+
     connection_manager_class = MockGearmanClient
     command_handler_class = GearmanClientCommandHandler
 
@@ -324,7 +333,9 @@ class ClientCommandHandlerInterfaceTest(_GearmanAbstractTest):
 
 
 class ClientCommandHandlerStateMachineTest(_GearmanAbstractTest):
+
     """Test single state transitions within a GearmanWorkerCommandHandler"""
+
     connection_manager_class = MockGearmanClient
     command_handler_class = GearmanClientCommandHandler
 
@@ -445,6 +456,7 @@ class ClientCommandHandlerStateMachineTest(_GearmanAbstractTest):
         self.assertTrue(current_request.status['running'])
         self.assertEqual(current_request.status['numerator'], 0)
         self.assertEqual(current_request.status['denominator'], 1)
+
 
 if __name__ == '__main__':
     unittest.main()

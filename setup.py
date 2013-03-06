@@ -5,16 +5,16 @@ from setuptools import setup
 from gearman import __version__ as version
 
 setup(
-    name = 'gearman',
-    version = version,
-    author = 'Matthew Tai',
-    author_email = 'mtai@yelp.com',
-    description = 'Gearman API - Client, worker, and admin client interfaces',
+    name='gearman',
+    version=version,
+    author='Matthew Tai',
+    author_email='mtai@yelp.com',
+    description='Gearman API - Client, worker, and admin client interfaces',
     long_description=open('README.txt').read(),
-    url = 'http://github.com/Yelp/python-gearman/',
-    packages = ['gearman'],
+    url='http://github.com/Yelp/python-gearman/',
+    packages=['gearman'],
     license='Apache',
-    classifiers = [
+    classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',

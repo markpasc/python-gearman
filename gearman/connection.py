@@ -13,7 +13,9 @@ from gearman.protocol import GEARMAN_PARAMS_FOR_COMMAND, GEARMAN_COMMAND_TEXT_CO
 
 gearman_logger = logging.getLogger(__name__)
 
+
 class GearmanConnection(object):
+
     """A connection between a client/worker and a server.  Can be used to reconnect (unlike a socket)
 
     Wraps a socket and provides the following functionality:
@@ -24,7 +26,9 @@ class GearmanConnection(object):
         Manages command buffers for gearman-level operations
 
     All I/O and buffering should be done in this class
+
     """
+
     connect_cooldown_seconds = 1.0
 
     def __init__(self, host=None, port=DEFAULT_GEARMAN_PORT):
@@ -254,4 +258,4 @@ class GearmanConnection(object):
 
     def __repr__(self):
         return ('<GearmanConnection %s:%d connected=%s>' %
-            (self.gearman_host, self.gearman_port, self.connected))
+                (self.gearman_host, self.gearman_port, self.connected))

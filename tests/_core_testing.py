@@ -2,17 +2,18 @@ import collections
 import random
 import unittest
 
-import gearman.util
 from gearman.command_handler import GearmanCommandHandler
 from gearman.connection import GearmanConnection
 from gearman.connection_manager import GearmanConnectionManager, NoopEncoder
-
 from gearman.constants import PRIORITY_NONE, PRIORITY_HIGH, PRIORITY_LOW, DEFAULT_GEARMAN_PORT, JOB_UNKNOWN, JOB_CREATED
 from gearman.errors import ConnectionError
 from gearman.job import GearmanJob, GearmanJobRequest
 from gearman.protocol import get_command_name
+import gearman.util
+
 
 class MockGearmanConnection(GearmanConnection):
+
     def __init__(self, host=None, port=DEFAULT_GEARMAN_PORT):
         host = host or '__testing_host__'
         super(MockGearmanConnection, self).__init__(host=host, port=port)
@@ -39,17 +40,22 @@ class MockGearmanConnection(GearmanConnection):
 
     def __repr__(self):
         return ('<GearmanConnection %s:%d connected=%s> (%s)' %
-            (self.gearman_host, self.gearman_port, self.connected, id(self)))
+                (self.gearman_host, self.gearman_port, self.connected, id(self)))
+
 
 class MockGearmanConnectionManager(GearmanConnectionManager):
+
     """Handy mock client base to test Worker/Client/Abstract ClientBases"""
+
     def poll_connections_once(self, poller, connection_map, timeout=None):
         return set(), set(), set()
 
     def _register_connections_with_poller(self, connections, poller):
         pass
 
+
 class _GearmanAbstractTest(unittest.TestCase):
+
     connection_class = MockGearmanConnection
     connection_manager_class = MockGearmanConnectionManager
     command_handler_class = None
