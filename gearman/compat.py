@@ -67,3 +67,20 @@ except ImportError:
         def __repr__(self):
             return 'defaultdict(%s, %s)' % (self.default_factory,
                                             dict.__repr__(self))
+
+# Required for python 2 backward compatibilty
+# Add a module attribute called "bytes" which is equivalent to bytes in Python 3 and str in Python 2.
+try:
+    text_type = unicode
+except NameError:
+    text_type = str
+    binary_type = bytes
+    array_to_binary = lambda a: a.tobytes()
+else:
+    binary_type = str
+    array_to_binary = lambda a: a.tostring()
+
+def b(text):
+    """Return the given literal string converted to the binary type."""
+    # This works for both 2 and 3 as long as text is a 'regular' 'string'.
+    return text.encode('ascii')
